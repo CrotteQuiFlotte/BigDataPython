@@ -57,7 +57,7 @@ def conteur_essais_groupe():
 
 
 #Question 3				
-def groupe_tentatives_max():		#retoure les 3 groupes ayant réalisés le plus d'essais avec le nombre d'essais
+def groupe_tentatives_max():		#retoure les 3 groupes ayant réalisés le plus d'essais avec le nombre d'essais	
 	max = [0, 0, 0]
 	groupeMax = [-1, -1, -1]
 	groupes = conteur_essais_groupe()
@@ -72,27 +72,24 @@ def groupe_tentatives_max():		#retoure les 3 groupes ayant réalisés le plus d'
 
 #Les Etudiants
 def conteur_essais_etudiant():			#retourne une liste au format [ ["Groupe1", ["Etudiant 1", "Nombres d'essais"] ], ["Groupe1", ["Etudiant 2", "Nombres d'essais"] ], ...]
-	with open('essais.csv') as fichier:
-		reader = csv.DictReader(fichier)
-		etudiants = []
-		groupes = []
-		for i in creer_liste_champ_unique('essais.csv', 'GROUPE'):
-			groupes.append([i])
+	my_dict = creer_liste_csv('essais.csv', ["GROUPE", "ETUDIANT"])
+	etudiants = []
+	groupes = []
+	for groupe in creer_liste_champ_unique(my_dict, 'GROUPE'):
+		groupes.append([groupe])
 
-		for line in reader:
-			if(line['ETUDIANT'] not in etudiants):
-				etudiants.append(line['ETUDIANT'])
-				for i in groupes:
-					if i[0] == line['GROUPE']:
-						i.append([line['ETUDIANT'],0])
-	
-	with open('essais.csv') as fichier:
-		reader = csv.DictReader(fichier)
-		for line in reader:
+	for i in range(len(my_dict['ETUDIANT'])):
+		if(my_dict['ETUDIANT'][i] not in etudiants):
+			etudiants.append(my_dict['ETUDIANT'][i])
 			for groupe in groupes:
-				for etudiant in groupe:
-					if etudiant[0] == line['ETUDIANT']:
-						etudiant[1] = etudiant[1] + 1;
+				if groupe[0] == my_dict['GROUPE'][i]:
+					groupe.append([my_dict['ETUDIANT'][i],0])
+
+	for i in range(len(my_dict['ETUDIANT'])):
+		for groupe in groupes:
+			for etudiant in groupe:
+				if etudiant[0] == my_dict['ETUDIANT'][i]:
+					etudiant[1] = etudiant[1] + 1;
 	return groupes;
 
 
@@ -141,53 +138,46 @@ def moyenne_essais_par_groupe():		#retourne la moyenne du nombre d'essais par gr
 #Les Echecs
 #Exercice 1
 def tentatives_par_groupe():		#retourne une liste contenant chaque groupe associé aux exercices effectués par ce groupe
-					#format [ ["Groupe1", "Nombre d'étudiants"], ["Groupe2", "Nombre d'étudiants"], ...]
-	with open('essais.csv') as fichier:
-		reader = csv.DictReader(fichier)
-		groupes = []
-		for i in creer_liste_champ_unique('essais.csv', 'GROUPE'):
-			groupes.append([i,[]])
-		for line in reader:
-			for groupe in groupes:
-				if(line['EXO'] not in groupe[1]):
-					groupe[1].append(line['EXO'])
+					#format [ ["Groupe1", "Exercice 1", "Exercice 2"], ["Groupe2", "Exercice 1", "Exercice 3"], ...]
+	my_dict = creer_liste_csv('essais.csv', ["GROUPE", "EXO"])
+	groupes = []
+	for i in creer_liste_champ_unique(my_dict, 'GROUPE'):
+		groupes.append([i,[]])
+	for i in range(len(my_dict['EXO'])):
+		for groupe in groupes:
+			if(my_dict['EXO'][i] not in groupe[1]):
+				groupe[1].append(my_dict['EXO'][i])
 
 	return groupes
 
 
 #Exercice 2
 def tentatives_par_exercice():	#retourne une liste des exercices tentés associé a sa reussite ou non. Format [ ["Exercice 1", 1], ["Exercice 2", 0], ...]
-
-	with open('essais.csv') as fichier:
-		reader = csv.DictReader(fichier)
-		exercices = []
-		for i in creer_liste_champ_unique('essais.csv', 'EXO'):
-			exercices.append([i, 0])
-		for line in reader:
-			#print(line['HORODATEUR'])
-			if(line['ERREURS'] == "0"):
-				if(line['ECHECS'] == "0"):
-					for exercice in exercices:
-						if(exercice[0] == line['EXO']):
-							exercice[1] = exercice[1] + 1
+	my_dict = creer_liste_csv('essais.csv', ["EXO", "ERREURS", "ECHECS"])
+	exercices = []
+	for i in creer_liste_champ_unique(my_dict, 'EXO'):
+		exercices.append([i, 0])
+	for i in range(len(my_dict['EXO'])):
+		if(my_dict['ERREURS'][i] == "0" and my_dict['ECHECS'][i] == "0"):
+			for exercice in exercices:
+				if(exercice[0] == my_dict['EXO'][i]):
+					exercice[1] = exercice[1] + 1
 	return exercices
 
 
 #Les Réussites
 #Exercice 1
 def moy_temps_reussite():
-	with open('essais.csv') as fichier:
-		reader = csv.DictReader(fichier)
-		exercices = []
-		for i in creer_liste_champ_unique('essais.csv', 'EXO'):
-			exercices.append([i, 0])
-		for line in reader:
-			#print(line['HORODATEUR'])
-			if(line['ERREURS'] == "0"):
-				if(line['ECHECS'] == "0"):
-					for exercice in exercices:
-						if(exercice[0] == line['EXO']):
-							exercice[1] = exercice[1] + 1
+	my_dict = creer_liste_csv('essais.csv', ["EXO", "ERREURS", "ECHECS", "HORODATEUR"])
+	exercices = [["ex1", 2, 1]]
+	for i in range(len(my_dict['EXO'])):
+		in_list = 0
+		for exercice in exercices:
+			if(exercice[0] == my_dict['EXO'][i]):
+				in_list = 1
+				exercice[1] = "ok"
+			if(in_list == 0):
+				exercices.append([my_dict['EXO'][i], -1, -1])
 	return exercices
 
 
@@ -231,7 +221,7 @@ class Interface(Frame):
 		#Les Exercices
 		#Les Echecs
 		#Exercice 1
-		self.bouton_7 = Button(self, text="Exercices realisés par chaque groupe", fg="red", command=self.echecs1)
+		self.bouton_7 = Button(self, text="Exercices tentés par chaque groupe", fg="red", command=self.echecs1)
 		self.bouton_7.pack()
 
 		#Exercice 2
@@ -348,7 +338,8 @@ class Interface(Frame):
 	#Exercice 1
 
 	def reussites1(self):
-		exercices = tentatives_par_exercice()
+		exercices = moy_temps_reussite()
+		print(exercices)
 
 	def reussites2(self):
 		exercices = tentatives_par_exercice()
