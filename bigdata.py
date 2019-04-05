@@ -59,14 +59,14 @@ def conteur_essais_groupe():
 #Question 3				
 def groupe_tentatives_max():		#retoure les 3 groupes ayant réalisés le plus d'essais avec le nombre d'essais	
 	max = [0, 0, 0]
-	groupeMax = [-1, -1, -1]
+	groupe_max = [-1, -1, -1]
 	groupes = conteur_essais_groupe()
 	for groupe in groupes:
 		index_max_a_changer = max.index(min(max))
 		if int(groupe[1]) > int(max[index_max_a_changer]):
 			max[index_max_a_changer] = groupe[1]
-			groupeMax[index_max_a_changer] = groupe[0]
-	return max[0], groupeMax[0], max[1], groupeMax[1], max[2], groupeMax[2]
+			groupe_max[index_max_a_changer] = groupe[0]
+	return max[0], groupe_max[0], max[1], groupe_max[1], max[2], groupe_max[2]
 	
 
 
@@ -272,8 +272,8 @@ class Interface(Frame):
 
 	#Question 3				A SIMPLIFIER ET MODIFIER!!
 	def groupes3(self):
-		max1, groupeMax1, max2, groupeMax2, max3, groupeMax3 = groupe_tentatives_max()
-		string = "\nPlus grand nombre de tentatives : \n{} pour le groupe {}\n{} pour le groupe {}\n{} pour le groupe {}\n".format(max1, groupeMax1,max2, groupeMax2,max3, groupeMax3)
+		max1, groupe_max1, max2, groupe_max2, max3, groupe_max3 = groupe_tentatives_max()
+		string = "\nPlus grand nombre de tentatives : \n{} pour le groupe {}\n{} pour le groupe {}\n{} pour le groupe {}\n".format(max1, groupe_max1,max2, groupe_max2,max3, groupe_max3)
 		self.message["text"] = string
 
 
